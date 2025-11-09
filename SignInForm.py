@@ -38,5 +38,34 @@ class FormNo1(App):
 
         return outgo1
 
+
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+
+row = 3
+col = 5
+
+class M(App):
+    def build(self):
+        root = GridLayout(rows = row, cols = col)
+        for i in range(row):
+            for j in range(col):
+                x=i*j
+                root.add_widget(Button(text = f"({x})"))
+
+        return root
+    
+M().run()
+
+
+
+
+
 FormNo1().run()
+
 
