@@ -1,0 +1,74 @@
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import Image
+
+class ChessBoard(App):
+    def build(self):
+        root = GridLayout(rows=8, cols=8)
+        for i in range(8):
+            for j in range(8):
+                img = "C:/Users/Lenovo/OneDrive/Desktop/white-imgs.png" if (i+j)%2==0 else "C:/Users/Lenovo/OneDrive/Desktop/black-imgs.jpeg"
+                root.add_widget(Image(source=img))
+        return root
+
+ChessBoard().run()
+
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import Image
+
+row = 8  
+col = 8  
+
+class ChessGround(App):
+    def build(self):
+        root = GridLayout(rows=row, cols=col)
+
+        for i in range(row):
+            for j in range(col):
+               
+                if (i + j) % 2 == 0:
+                    img_source = "C:/Users/Lenovo/OneDrive/Desktop/white-imgs.png"
+                else:
+                    img_source = "C:/Users/Lenovo/OneDrive/Desktop/black-imgs.jpeg"
+
+                root.add_widget(Image(source=img_source))
+
+            # for i in range(rows):
+            # for j in range(cols):
+                
+            #     if (i + j) % 2 == 0:
+            #         color = [1, 1, 1, 1]  
+            #     else:
+            #         color = [0, 0, 0, 1] 
+
+            #     btn = Button(
+            #         background_normal='',  
+            #         background_color=color
+            #     )
+
+            
+
+            #     root.add_widget(btn)
+
+            # return root
+
+        return root
+
+
+
+
+
+
+
+
+
+
+
+ChessGround().run() 
