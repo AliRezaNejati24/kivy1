@@ -64,11 +64,35 @@ class ChessGround(App):
 
 
 
-
-
-
-
-
-
-
 ChessGround().run() 
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+
+r = 6
+c = 6
+
+class board(App):
+    def build(self):
+        root = GridLayout(rows=r, cols=c)
+
+        for i in range(r):
+            for j in range(c):
+                
+                if (i + j) % 2 == 0:
+                   colors = [0, 0, 0, 1]   
+                else:
+                
+                    colors = [1, 1, 1, 1]
+
+                button = Button( background_normal='', background_color=colors )
+
+                root.add_widget(button)
+
+        return root
+
+board().run()
