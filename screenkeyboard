@@ -1,0 +1,317 @@
+
+
+
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+
+r = 6
+c = 6
+
+class board(App):
+    def build(self):
+        # ریشه: یک BoxLayout عمودی که بالاش کادر نمایش و پایینش کیبورد است
+        root = BoxLayout(orientation='vertical')
+
+        # کادر نمایش (بالا)
+        display = TextInput(text='', multiline=False, readonly=False, font_size=24, size_hint_y=0.2)
+
+        # کیبورد (پایین)
+        keyboard = GridLayout(rows=r, cols=c)
+
+        # برای پر کردن دکمه‌ها از اعداد استفاده کردم؛ می‌توانید متن‌ها را به دلخواه تغییر دهید
+        for i in range(r):
+            for j in range(c):
+                # تعیین رنگ پس‌زمینه شطرنجی مانند کد اولیه
+                if (i + j) % 2 == 0:
+                    colors = [0, 0, 0, 1]
+                    text_color = [1, 1, 1, 1]
+                else:
+                    colors = [1, 1, 1, 1]
+                    text_color = [0, 0, 0, 1]
+
+                # متن دکمه (مثال: شماره‌ی ترتیبی)
+                idx = i * c + j + 1
+                btn_text = str(idx)
+
+                button = Button(text=btn_text, color=text_color, background_normal='', background_color=colors)
+
+                # تابعی که هم متن را به کادر نمایش اضافه می‌کند و هم رنگ متن دکمه را تغییر می‌دهد
+                def on_press_button(instance, b=button):
+                    # اضافه کردن متن دکمه به کادر نمایش
+                    display.text = display.text + b.text
+                    # تغییر رنگ متن دکمه (همان کاری که در کد اولیه بود)
+                    b.color = [.51, .1, 1, 1]
+
+                button.bind(on_press=on_press_button)
+                keyboard.add_widget(button)
+
+        root.add_widget(display)
+        root.add_widget(keyboard)
+        return root
+
+board().run()
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+
+
+r = 6
+c = 6
+
+class board(App):
+    def build(self):
+       
+        root = GridLayout(rows=5, spacing=4, padding=4)
+
+       
+        display = TextInput(text='', multiline=False, font_size=24, size_hint_y=None, height=50)
+
+       
+        root.add_widget(display)
+
+        
+        numbers = ['1','2','3','4','5','6','7','8','9','0']
+        row_numbers = GridLayout(cols=len(numbers))
+        for t in numbers:
+        
+            if numbers.index(t) % 2 == 0:
+                colors = [0, 0, 0, 1]
+                text_color = [1, 1, 1, 1]
+            else:
+                colors = [1, 1, 1, 1]
+                text_color = [0, 0, 0, 1]
+
+            button = Button(text=t, color=text_color, background_normal='', background_color=colors)
+            def on_press_num(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, .1, 1, 1]
+            button.bind(on_press=on_press_num)
+            row_numbers.add_widget(button)
+        root.add_widget(row_numbers)
+
+        
+        row1 = ['q','w','e','r','t','y','u','i','o','p']
+        row_q = GridLayout(cols=len(row1))
+        for t in row1:
+            if (row1.index(t)) % 2 == 0:
+                colors = [0, 0, 0, 1]
+                text_color = [1, 1, 1, 1]
+            else:
+                colors = [1, 1, 1, 1]
+                text_color = [0, 0, 0, 1]
+
+            button = Button(text=t, color=text_color, background_normal='', background_color=colors)
+            def on_press_letter(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, .1, 1, 1]
+            button.bind(on_press=on_press_letter)
+            row_q.add_widget(button)
+        root.add_widget(row_q)
+
+        
+        row2 = ['a','s','d','f','g','h','j','k','l']
+        row_a = GridLayout(cols=len(row2))
+        for t in row2:
+            if (row2.index(t)) % 2 == 0:
+                colors = [0, 0, 0, 1]
+                text_color = [1, 1, 1, 1]
+            else:
+                colors = [1, 1, 1, 1]
+                text_color = [0, 0, 0, 1]
+
+            button = Button(text=t, color=text_color, background_normal='', background_color=colors)
+            def on_press_letter2(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, .1, 1, 1]
+            button.bind(on_press=on_press_letter2)
+            row_a.add_widget(button)
+        root.add_widget(row_a)
+
+        
+        row3_letters = ['z','x','c','v','b','n','m']
+        
+        row_z = GridLayout(cols=9)
+
+        back = Button(text='⌫', color=[0,0,0,1], background_normal='', background_color=[0.9,0.9,0.9,1])
+        def on_back(instance):
+            display.text = display.text[:-1]
+            back.color = [.51, .1, 1, 1]
+        back.bind(on_press=on_back)
+        row_z.add_widget(back)
+
+        for t in row3_letters:
+            if row3_letters.index(t) % 2 == 0:
+                colors = [0, 0, 0, 1]
+                text_color = [1, 1, 1, 1]
+            else:
+                colors = [1, 1, 1, 1]
+                text_color = [0, 0, 0, 1]
+
+            button = Button(text=t, color=text_color, background_normal='', background_color=colors)
+            def on_press_letter3(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, .1, 1, 1]
+            button.bind(on_press=on_press_letter3)
+            row_z.add_widget(button)
+
+      
+        space = Button(text='Space', color=[0,0,0,1], background_normal='', background_color=[0.9,0.9,0.9,1])
+        def on_space(instance):
+            display.text = display.text + ' '
+            space.color = [.51, .1, 1, 1]
+        space.bind(on_press=on_space)
+        row_z.add_widget(space)
+
+        root.add_widget(row_z)
+
+        return root
+
+board().run()
+
+
+
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.widget import Widget
+
+
+
+r = 3
+c = 3
+
+class board(App):
+    def build(self):
+       
+        root = GridLayout(rows=3, cols=1, spacing=4, padding=4)
+
+      
+        display = TextInput(text='', multiline=False, font_size=40, size_hint_y=None, height=200)
+        
+
+        
+        row1 = GridLayout(cols=3)
+        row1_texts = ['h', 'i', 'e']
+        for t in row1_texts:
+            if row1_texts.index(t) % 2 == 0:
+                colors = [0, 0, 0, 1]
+                text_color = [1, 1, 1, 1]
+            else:
+                colors = [1, 1, 1, 1]
+                text_color = [0, 0, 0, 1]
+
+            button = Button(text=t, color=text_color, background_normal='', background_color=colors)
+            def on_press_letter(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, .1, 1, 1]
+            button.bind(on_press=on_press_letter)
+            row1.add_widget(button)
+        
+
+       
+        row2 = GridLayout(cols=3)
+        row2_texts = ['l', 'm', 'o']
+        for t in row2_texts:
+            if row2_texts.index(t) % 2 == 0:
+                colors = [0, 0, 0, 1]
+                text_color = [1, 1, 1, 1]
+            else:
+                colors = [1, 1, 1, 1]
+                text_color = [0, 0, 0, 1]
+
+            button = Button(text=t, color=text_color, background_normal='', background_color=colors)
+            def on_press_letter2(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, .1, 1, 1]
+            button.bind(on_press=on_press_letter2)
+            row2.add_widget(button)
+       
+
+        root.add_widget(display)
+        root.add_widget(row2)
+        
+        root.add_widget(row1)
+        return root
+
+board().run()
+
+
+
+
+
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.widget import Widget
+
+
+
+r = c = 3
+
+
+class board(App):
+    def build(self):
+       
+        root = GridLayout(rows=3, cols=3)
+
+      
+        display = TextInput(text='', multiline=False, font_size=40, size_hint_y=None, height=200)
+        
+
+        
+        row1 = GridLayout(cols=3)
+        row1_texts = ['h', 'i', 'e']
+        for t in row1_texts:
+            
+
+            button = Button(text=t)
+            def on_press_letter(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, 1, 1, 1]
+            button.bind(on_press=on_press_letter)
+            row1.add_widget(button)
+        
+
+       
+        row2 = GridLayout(cols=3)
+        row2_texts = ['l', 'm', 'o']
+        for t in row2_texts:
+            
+
+            button = Button(text=t)
+            def on_press_letter2(instance, b=button):
+                display.text = display.text + b.text
+                b.color = [.51, 1, 1, 1]
+            button.bind(on_press=on_press_letter2)
+            row2.add_widget(button)
+       
+
+        root.add_widget(display)
+        root.add_widget(row2)
+        
+        root.add_widget(row1)
+        return root
+
+board().run()
+
+
+
+
