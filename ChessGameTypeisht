@@ -73,8 +73,7 @@ from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 
-r = 6
-c = 6
+r = c = 6
 
 class board(App):
     def build(self):
