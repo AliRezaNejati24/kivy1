@@ -312,6 +312,51 @@ class board(App):
 
 board().run()
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.widget import Widget
+
+
+
+r = c = 3
+
+
+class board(App):
+    def build(self):
+       
+        root = GridLayout(rows=3, cols=1)
+
+      
+        display = TextInput(text='', multiline=False, font_size=40, size_hint_y=None, height=200)
+        root.add_widget(display)
+        
+
+        
+        all_rows = [
+            ['h','i','e', 'l','m','o']
+           
+        ]
+
+       
+        for row_texts in all_rows:
+            row = GridLayout(cols=3)
+            for t in row_texts:
+                button = Button(text=t)
+                def on_press_letter(instance, b=button):
+                    display.text = display.text + b.text
+                    b.color = [.51, 1, 1, 1]
+                button.bind(on_press=on_press_letter)
+                row.add_widget(button)
+            root.add_widget(row)
+        return root
+
+board().run()
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 
 
 
