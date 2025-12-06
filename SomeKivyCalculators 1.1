@@ -1,0 +1,201 @@
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+
+class board(App):
+    def build(self):
+        root = GridLayout(rows=2, cols=1)
+
+        
+        display = TextInput(text='', multiline=False, font_size=40, size_hint_y=None, height=100)
+        root.add_widget(display)
+
+       
+        buttons = [
+            '7','8','9','/',
+            '4','5','6','*',
+            '1','2','3','-',
+            '0','C','=','+'
+        ]
+
+        grid = GridLayout(cols=4)
+        for t in buttons:
+            btns = Button(text=t, font_size=32)
+            def on_press(instance, b=btns):
+                if b.text == 'C':
+                    display.text = ''
+                elif b.text == '=':
+                    display.text = str(eval(display.text))
+
+                else:
+                    display.text = display.text + b.text
+
+                b.color = [.51, 1, 1, 1]
+
+            btns.bind(on_press=on_press)
+            grid.add_widget(btns)
+
+        root.add_widget(grid)
+        return root
+
+board().run()
+
+
+
+
+
+
+
+
+
+
+
+
+    # from kivy.app import App
+    # from kivy.uix.gridlayout import GridLayout
+    # from kivy.uix.button import Button
+    # from kivy.uix.textinput import TextInput
+
+    # class board(App):
+    #     def build(self):
+    #         root = GridLayout(rows=2, cols=1)
+
+    #         # نمایشگر بالا
+    #         display = TextInput(text='', multiline=False, font_size=40, size_hint_y=None, height=100)
+    #         root.add_widget(display)
+
+    #         # دکمه‌ها
+    #         buttons = [
+    #             '7','8','9','/',
+    #             '4','5','6','*',
+    #             '1','2','3','-',
+    #             '0','C','=','+'
+    #         ]
+
+    #         grid = GridLayout(cols=4)
+    #         for t in buttons:
+    #             btn = Button(text=t, font_size=32)
+    #             def on_press(instance, b=btn):
+    #                 if b.text == 'C':
+    #                     display.text = ''
+    #                 elif b.text == '=':
+    #                     try:
+    #                         display.text = str(eval(display.text))
+    #                     except:
+    #                         display.text = 'Error'
+    #                 else:
+    #                     display.text = display.text + b.text
+    #                 b.color = [.51, 1, 1, 1]
+    #             btn.bind(on_press=on_press)
+    #             grid.add_widget(btn)
+
+    #         root.add_widget(grid)
+    #         return root
+
+    # board().run()
+
+
+
+
+
+
+        # allowed = "0123456789+-*/"
+        # expr = display.text
+        # if all(ch in allowed for ch in expr):
+        #     display.text = str(eval(expr))
+        # else:
+        #     display.text = "Error"
+
+
+
+        # import ast
+
+        # try:
+        #     display.text = str(ast.literal_eval(display.text))
+        # except:
+        #     display.text = "Error"
+
+
+
+        # display = TextInput(text='', multiline=False, font_size=40, readonly=True)
+
+
+
+
+
+
+# from kivy.app import App
+# from kivy.uix.gridlayout import GridLayout
+# from kivy.uix.button import Button
+# from kivy.uix.textinput import TextInput
+
+# class board(App):
+#     def build(self):
+#         root = GridLayout(rows=2, cols=1)
+
+#         display = TextInput(text='', multiline=False, font_size=40, readonly=True)
+#         root.add_widget(display)
+
+#         # متغیرهای کمکی برای ذخیره عدد و عملگر
+#         self.first_number = ''
+#         self.operator = ''
+#         self.second_number = ''
+
+#         buttons = [
+#             '7','8','9','/',
+#             '4','5','6','*',
+#             '1','2','3','-',
+#             '0','C','=','+'
+#         ]
+
+#         grid = GridLayout(cols=4)
+#         for t in buttons:
+#             btn = Button(text=t, font_size=32)
+#             def on_press(instance, b=btn):
+#                 if b.text in '0123456789':
+#                     # اگر عملگر هنوز انتخاب نشده، عدد اول ساخته می‌شود
+#                     if self.operator == '':
+#                         self.first_number += b.text
+#                         display.text = self.first_number
+#                     else:
+#                         self.second_number += b.text
+#                         display.text = self.second_number
+#                 elif b.text in '+-*/':
+#                     self.operator = b.text
+#                 elif b.text == '=':
+#                     if self.operator == '+':
+#                         result = int(self.first_number) + int(self.second_number)
+#                     elif self.operator == '-':
+#                         result = int(self.first_number) - int(self.second_number)
+#                     elif self.operator == '*':
+#                         result = int(self.first_number) * int(self.second_number)
+#                     elif self.operator == '/':
+#                         result = int(self.first_number) / int(self.second_number)
+#                     else:
+#                         result = 'Error'
+#                     display.text = str(result)
+#                     # پاک کردن برای محاسبهٔ بعدی
+#                     self.first_number = str(result)
+#                     self.second_number = ''
+#                     self.operator = ''
+#                 elif b.text == 'C':
+#                     self.first_number = ''
+#                     self.second_number = ''
+#                     self.operator = ''
+#                     display.text = ''
+#                 b.color = [.51, 1, 1, 1]
+#             btn.bind(on_press=on_press)
+#             grid.add_widget(btn)
+
+#         root.add_widget(grid)
+#         return root
+
+# board().run()
+
+
+
