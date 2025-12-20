@@ -1,0 +1,62 @@
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.core.window import Window
+
+
+RED = (1, 0, 0, 1)
+YELLOW = (1, 1, 0, 1)
+BLUE = (0, 0, 1, 1)
+GREEN = (0, 1, 0, 1)
+DEFAULT_TEXT = (1, 1, 1, 1)
+DEFAULT_BTN_BG = (1, 1, 1, 1)
+
+
+
+class ColorApp(App):
+    def build(self):
+        root = GridLayout(rows=2, cols=1, padding=10, spacing=10)
+
+        
+        top = GridLayout(cols=2, spacing=10)
+        button_red = Button(text='Red', background_color=DEFAULT_BTN_BG, color=DEFAULT_TEXT, font_size=50)
+        button_yellow = Button(text='Yellow', background_color=DEFAULT_BTN_BG, color=DEFAULT_TEXT, font_size=50)
+
+        
+        bottom = GridLayout(cols=2, spacing=10)
+        button_blue = Button(text='Blue', background_color=DEFAULT_BTN_BG, color=DEFAULT_TEXT, font_size=25)
+        button_green = Button(text='Green', background_color=DEFAULT_BTN_BG, color=DEFAULT_TEXT, font_size=25)
+
+      
+        def make_top_color( button, color):
+            def handler(instance):
+                button.color = color            
+                Window.clearcolor = color      
+            return handler
+
+      
+        def make_bottom_color( button, color):
+            def handler(instance):
+                button.background_color = color 
+                button.color = DEFAULT_TEXT    
+                Window.clearcolor = color       
+            return handler
+
+       
+        button_red.bind(on_press=make_top_color(button_red, RED))
+        button_yellow.bind(on_press=make_top_color(button_yellow, YELLOW))
+        button_blue.bind(on_press=make_bottom_color(button_blue, BLUE))
+        button_green.bind(on_press=make_bottom_color(button_green, GREEN))
+
+        top.add_widget(button_red)
+        top.add_widget(button_yellow)
+        bottom.add_widget(button_blue)
+        bottom.add_widget(button_green)
+
+        root.add_widget(top)
+        root.add_widget(bottom)
+
+        
+        return root
+
+ColorApp().run()
