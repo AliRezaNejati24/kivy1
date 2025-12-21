@@ -1,0 +1,58 @@
+
+
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.core.window import Window
+from kivy.uix.popup import Popup
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.label import Label 
+from kivy.uix.widget import Widget
+
+
+class Myapp(App):
+    def build(self):
+        root = Widget()
+        # grid = GridLayout(rows=3, cols=1)
+        name = TextInput(text='',hint_text="Write Ya Name", multiline=False, font_size=40, height=100)
+        sign_butt = Button (text="Sign In", font_size=50)
+        man_butt = ToggleButton (text='male', group='gender')
+        woman_butn = ToggleButton(text='female', group= 'gender')
+
+        
+        def ok1(instance):
+            if man_butt.state == "down":
+                print("You are a man!")
+
+            elif woman_butn.state == "down":
+                print("You are a woman!")
+
+        def ok2(instance):
+            popyup = Popup(title='Welcome', content = Label (text='Welcome Mr/Ms' + name.text + "You are "+  ok1.state), close_butt = Button(text='OK, Approved'))
+            # close_butt = Button(text='OK, Approved')
+            # popyup.content = "Hello! Dear " + name.text
+            
+
+            popyup.open
+
+        man_butt.bind(on_press = ok1)
+        woman_butn.bind(on_press = ok1)
+
+
+        root.add_widget(name)
+        root.add_widget(sign_butt)
+        root.add_widget(man_butt)
+        root.add_widget(woman_butn)
+
+        return root
+
+
+Myapp().run()
+        
+
+
+        
+
