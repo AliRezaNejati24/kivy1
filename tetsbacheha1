@@ -1,0 +1,226 @@
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.widget import Widget
+from kivy.graphics import Ellipse, Color, Rectangle
+import random
+
+class PaintArea(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.mode = None  # حالت: None, 'draw', 'erase'
+
+        # پس‌زمینه سفید برای دیده شدن
+        with self.canvas.before:
+            self.bg_color = Color(1, 1, 1, 1)
+            self.bg_rect = Rectangle(pos=self.pos, size=self.size)
+        self.bind(pos=self._update_bg, size=self._update_bg)
+
+    def _update_bg(self, *args):
+        self.bg_rect.pos = self.pos
+        self.bg_rect.size = self.size
+
+    def on_touch_move(self, touch):
+        # فقط اگر داخل این ویجت باشیم
+        if not self.collide_point(*touch.pos):
+            return False
+
+        if self.mode == 'draw':
+            r, g, b = random.random(), random.random(), random.random()
+            with self.canvas:
+                Color(r, g, b, 1)
+                Ellipse(pos=(touch.x - 5, touch.y - 5), size=(10, 10))
+
+        elif self.mode == 'erase':
+            with self.canvas:
+                Color(1, 1, 1, 1)
+                Ellipse(pos=(touch.x - 10, touch.y - 10), size=(20, 20))
+
+        return True
+
+class PaintApp(App):
+    def build(self):
+        root = GridLayout(rows=2, cols=1, spacing=10, padding=10)
+
+        # دکمه‌ها بالا
+        bar = GridLayout(cols=2, size_hint_y=None, height=60, spacing=10)
+        draw_btn = Button(text='Draw')
+        erase_btn = Button(text='Erase')
+
+        area = PaintArea()
+        area.size_hint = (1, 1)
+
+        # تغییر حالت با دکمه‌ها
+        draw_btn.bind(on_press=lambda instance: setattr(area, 'mode', 'draw'))
+        erase_btn.bind(on_press=lambda instance: setattr(area, 'mode', 'erase'))
+
+        bar.add_widget(draw_btn)
+        bar.add_widget(erase_btn)
+
+        root.add_widget(bar)
+        root.add_widget(area)
+
+        return root
+
+if __name__ == '__main__':
+    PaintApp().run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# hover_paint.py
+import random
+from math import hypot
+
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.widget import Widget
+from kivy.graphics import Color, Ellipse, InstructionGroup
+from kivy.core.window import Window
+from kivy.properties import StringProperty, NumericProperty
+
+Window.size = (900, 600)
+Window.clearcolor = (1, 1, 1, 1)
+
+class HoverPaintCanvas(Widget):
+    mode = StringProperty('draw')      # 'draw' یا 'erase'
+    circle_radius = NumericProperty(6)
+    erase_radius = NumericProperty(22)
+    min_step = NumericProperty(6)      # حداقل فاصله بین دایره‌ها
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.circles = []              # لیست دایره‌ها: {'group', 'x', 'y', 'r'}
+        self._last_pos = None
+        # اتصال به رویداد حرکت موس در سطح پنجره
+        Window.bind(mouse_pos=self._on_mouse_move_global)
+
+    def _on_mouse_move_global(self, window, pos):
+        # pos بر حسب مختصات پنجره است؛ بررسی می‌کنیم آیا داخل ویجت ما هست
+        if not self.get_root_window():
+            return
+        if not self.collide_point(*self.to_widget(*pos)):
+            # اگر موس خارج بوم است، ریست موقعیت آخر
+            self._last_pos = None
+            return
+        # تبدیل مختصات پنجره به مختصات محلی ویجت
+        local_x, local_y = self.to_widget(*pos)
+        # بسته به حالت، رسم یا پاک کردن انجام می‌شود
+        if self.mode == 'draw':
+            self._hover_draw(local_x, local_y)
+        elif self.mode == 'erase':
+            self._hover_erase(local_x, local_y)
+
+    def _hover_draw(self, x, y):
+        # اگر اولین نقطه یا فاصله کافی از آخرین نقطه است، دایره رسم کن
+        if self._last_pos is None:
+            self._draw_circle(x, y)
+            self._last_pos = (x, y)
+            return
+        lx, ly = self._last_pos
+        dist = hypot(x - lx, y - ly)
+        if dist >= self.min_step:
+            steps = int(dist // self.min_step)
+            for i in range(1, steps + 1):
+                nx = lx + (x - lx) * (i / steps)
+                ny = ly + (y - ly) * (i / steps)
+                self._draw_circle(nx, ny)
+            self._last_pos = (x, y)
+
+    def _hover_erase(self, x, y):
+        # پاک کردن دایره‌هایی که در محدوده پاک‌کن هستند
+        er = self.erase_radius
+        to_remove = []
+        for item in self.circles:
+            if hypot(item['x'] - x, item['y'] - y) <= er:
+                to_remove.append(item)
+        for item in to_remove:
+            try:
+                self.canvas.remove(item['group'])
+            except Exception:
+                pass
+            try:
+                self.circles.remove(item)
+            except ValueError:
+                pass
+
+    def _random_color(self):
+        # تولید رنگ تصادفی روشن
+        return (random.random(), random.random(), random.random(), 1)
+
+    def _draw_circle(self, x, y):
+        r = self.circle_radius
+        color = self._random_color()
+        g = InstructionGroup()
+        g.add(Color(*color))
+        g.add(Ellipse(pos=(x - r, y - r), size=(2 * r, 2 * r)))
+        self.canvas.add(g)
+        self.circles.append({'group': g, 'x': x, 'y': y, 'r': r})
+
+    def clear_all(self):
+        for item in list(self.circles):
+            try:
+                self.canvas.remove(item['group'])
+            except Exception:
+                pass
+        self.circles.clear()
+        self._last_pos = None
+
+class HoverPaintApp(App):
+    def build(self):
+        root = BoxLayout(orientation='vertical', spacing=6, padding=6)
+        top_bar = BoxLayout(size_hint_y=None, height=50, spacing=6)
+
+        self.canvas_widget = HoverPaintCanvas()
+
+        btn_draw = Button(text='Draw', size_hint_x=None, width=160)
+        btn_erase = Button(text='Erase', size_hint_x=None, width=160)
+        btn_clear = Button(text='Erase All', size_hint_x=None, width=160)
+
+        btn_draw.bind(on_press=self.set_draw_mode)
+        btn_erase.bind(on_press=self.set_erase_mode)
+        btn_clear.bind(on_press=lambda *_: self.canvas_widget.clear_all())
+
+        top_bar.add_widget(btn_draw)
+        top_bar.add_widget(btn_erase)
+        top_bar.add_widget(btn_clear)
+
+        root.add_widget(top_bar)
+        root.add_widget(self.canvas_widget)
+
+        self.btn_draw = btn_draw
+        self.btn_erase = btn_erase
+        self.set_draw_mode()
+
+        return root
+
+    def set_draw_mode(self, *args):
+        self.canvas_widget.mode = 'draw'
+        self.btn_draw.background_color = (0.6, 0.9, 0.6, 1)
+        self.btn_erase.background_color = (0.9, 0.9, 0.9, 1)
+
+    def set_erase_mode(self, *args):
+        self.canvas_widget.mode = 'erase'
+        self.btn_erase.background_color = (0.9, 0.6, 0.6, 1)
+        self.btn_draw.background_color = (0.9, 0.9, 0.9, 1)
+
+if __name__ == '__main__':
+    HoverPaintApp().run()
+
+
+
