@@ -60,3 +60,88 @@ class ColorApp(App):
         return root
 
 ColorApp().run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import random
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.widget import Widget
+from kivy.graphics import Ellipse, Color, Rectangle
+
+
+class PaintWidget(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.mode = "draw"  # حالت پیش‌فرض: نقاشی
+
+    def on_touch_move(self, touch):
+        if self.mode == "draw":
+            # رنگ رندوم
+            r, g, b = random.random(), random.random(), random.random()
+            with self.canvas:
+                Color(r, g, b)
+                d = 10  # قطر دایره
+                Ellipse(pos=(touch.x - d/2, touch.y - d/2), size=(d, d))
+        elif self.mode == "erase":
+            # پاک کردن: یک مستطیل سفید روی محل ماوس می‌کشد
+            with self.canvas:
+                Color(1, 1, 1)  # سفید
+                d = 20  # اندازه پاک‌کن
+                Rectangle(pos=(touch.x - d/2, touch.y - d/2), size=(d, d))
+
+
+class PaintApp(App):
+    def build(self):
+        root = BoxLayout(orientation="vertical")
+
+        # نوار دکمه‌ها
+        button_bar = BoxLayout(size_hint=(1, 0.1))
+        btn_draw = Button(text="نقاشی کردن")
+        btn_erase = Button(text="پاک کردن")
+
+        # صفحه نقاشی
+        self.paint_area = PaintWidget()
+
+        # اتصال دکمه‌ها
+        btn_draw.bind(on_press=self.set_draw_mode)
+        btn_erase.bind(on_press=self.set_erase_mode)
+
+        button_bar.add_widget(btn_draw)
+        button_bar.add_widget(btn_erase)
+
+        root.add_widget(button_bar)
+        root.add_widget(self.paint_area)
+
+        return root
+
+    def set_draw_mode(self, instance):
+        self.paint_area.mode = "draw"
+
+    def set_erase_mode(self, instance):
+        self.paint_area.mode = "erase"
+
+
+if __name__ == "__main__":
+    PaintApp().run()
+
