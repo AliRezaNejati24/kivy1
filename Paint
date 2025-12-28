@@ -1,0 +1,52 @@
+
+
+from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.widget import Widget
+from kivy.graphics import Ellipse, Color
+import random
+
+class PaintArea(Widget):
+  
+    mode = None
+
+    def on_touch_move(self, touch):
+        if self.collide_point(touch.x, touch.y):
+            if self.mode == 'draw':
+                r, g, b = random.random(), random.random(), random.random()
+                with self.canvas:
+                    Color(r, g, b)
+                    Ellipse(pos=(touch.x-5, touch.y-5), size=(10, 10))
+            elif self.mode == 'erase':
+                with self.canvas:
+                    Color(0, 0, 0)
+                    Ellipse(pos=(touch.x-10, touch.y-10), size=(20, 20))
+
+class PaintApp(App):
+    def build(self):
+        root = GridLayout(rows=2, cols=1, spacing=10, padding=10)
+
+        buttons = GridLayout(cols=2, size_hint_y=None, height=60, spacing=10)
+        draw_btn = Button(text="Draw")
+        erase_btn = Button(text="Erase")
+
+        area = PaintArea()
+
+       
+        def set_mode(instance):
+            area.mode = instance.text.lower() 
+
+        draw_btn.bind(on_press=set_mode)
+        erase_btn.bind(on_press=set_mode)
+
+        buttons.add_widget(draw_btn)
+        buttons.add_widget(erase_btn)
+
+        root.add_widget(buttons)
+        root.add_widget(area)
+
+        return root
+
+PaintApp().run()
+
